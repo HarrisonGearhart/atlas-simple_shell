@@ -53,6 +53,12 @@ flowchart TB
     B --> C[Execute]
     C --> A
 ```
+```mermaid
+flowchart TB
+	A[Read Line] -- Fail --> B(exit w/ error message)
+	A -- Success --> C(return read line)
+	C-->D[Parse Line]
+```
 
 ## Authors
 - **Ari Williams** - [AriRainbow](https://github.com/AriRainbow)<br>
