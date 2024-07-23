@@ -46,6 +46,14 @@ To use Simple Shell:
 - Use the PATH environment variable to locate executables.<br>
 - Error handling and end-of-file (Ctrl+D) condition.
 
+## Flowchart
+```mermaid
+flowchart TB
+    A[Read Line] --> B[Parse Line]
+    B --> C[Execute]
+    C --> A
+```
+
 ## Authors
 - **Ari Williams** - [AriRainbow](https://github.com/AriRainbow)<br>
 - **Harrison Gearhart** - [HarrisonGearhart](https://github.com/HarrisonGearhart)
