@@ -97,6 +97,21 @@ C--None-->E-->F-->G--exists-->H-->K
 G--doesn't-->I--exists-->H
 I--doesn't-->J
 ```
+```mermaid
+flowchart TB
+A[New Process]
+B(return -1 & print error)
+C(return 0 & execute child process)
+D(Return PID of child process)
+E[parent process]
+F(Child Process terminates)
+G(Wifexited returns true)
+H(Wifsignal returns true)
+I{Infinite loop until a condition is met}
+A--error-->B
+A--success-->C-->D-->E-->F--Normal termination-->G-->I
+F--Termination by signal-->H-->I
+```
 
 ## Authors
 - **Ari Williams** - [AriRainbow](https://github.com/AriRainbow)<br>
