@@ -77,6 +77,26 @@ flowchart TB
     E-->G-->H-->F
     H--no token?-->I
 ```
+```mermaid
+flowchart TB
+A[Execute]
+B(return 1)
+C(Check for exit command)
+D(return 0)
+E(Check for ENV)
+F(Print current ENV variables, return 1)
+G(Check if command is in current directory)
+H(return 1 & execute)
+I(find in system path)
+J(print error)
+K[Call fork to create new process]
+A--empty-->B-->C
+A--not empty-->C
+C--Yes-->D
+C--None-->E-->F-->G--exists-->H-->K
+G--doesn't-->I--exists-->H
+I--doesn't-->J
+```
 
 ## Authors
 - **Ari Williams** - [AriRainbow](https://github.com/AriRainbow)<br>
