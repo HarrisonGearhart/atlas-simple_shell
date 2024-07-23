@@ -59,6 +59,24 @@ flowchart TB
 	A -- Success --> C(return read line)
 	C-->D[Parse Line]
 ```
+```mermaid
+flowchart TB
+    A[Parse Line]
+    B(Check memeroy allocation)
+    C(print error message)
+    D(tokenize using delimiters)
+    E(iterate thru tokens)
+    F(Continue until NULL)
+    G(If buf size if exceeded)
+    H(reallocate memory)
+    I(exit/memory allocation error)
+    J(return array)
+    K[Execute]
+    A-->B--error-->C
+    B--success-->D-->E-->F-->J-->K
+    E-->G-->H-->F
+    H--no token?-->I
+	```
 
 ## Authors
 - **Ari Williams** - [AriRainbow](https://github.com/AriRainbow)<br>
