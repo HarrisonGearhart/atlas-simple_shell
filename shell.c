@@ -60,7 +60,7 @@ char **parse_line(char *line)
 		tokens[position++] = token;
 
 		/* reallocate memory if buffer is exceeded */
-		if (position >= bufsize)
+	        if (position >= bufsize)
 		{
 			bufsize += BUFFER_SIZE;
 			tokens = realloc(tokens, bufsize * sizeof(char *));
