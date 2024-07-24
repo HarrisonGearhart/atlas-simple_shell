@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <string.h>
-#include "TEST_shell.h"
+#include "shell.h"
 
 extern char **environ; /* declare environ */
 
@@ -16,8 +16,8 @@ extern char **environ; /* declare environ */
  */
 int command_exists_in_current_dir(char *command)
 {
-        struct stat statbuf;
-        return (stat(command, &statbuf) ==0);
+	struct stat statbuf;
+	return (stat(command, &statbuf) ==0);
 }
 
 /**
@@ -28,38 +28,38 @@ int command_exists_in_current_dir(char *command)
  */
 char *find_command_in_path(char *command)
 {
-        char *path_env;
-        char *path_copy;
-        char *token;
-        char *full_path;
-        struct stat statbuf;
+	char *path_env;
+	char *path_copy;
+	char *token;
+	char *full_path;
+	struct stat statbuf;
 
-        path_env = getenv("PATH");
-        if (path_env == NULL)
-        {
-                return (NULL);
-        }
+	path_env = getenv("PATH");
+	if (path_env == NULL)
+	{
+	return (NULL);
+	}
 
-        path_copy = strdup(path_env);
-        token = strtok(path_copy, ":");
+	path_copy = strdup(path_env);
+	token = strtok(path_copy, ":");
 
-        while (token != NULL)
-        {
-                full_path = malloc(strlen(token) + strlen(command) + 2);
-                sprintf(full_path, "%s/%s", token, command);
+	while (token != NULL)
+	{
+	full_path = malloc(strlen(token) + strlen(command) + 2);
+		sprintf(full_path, "%s/%s", token, command);
 
-                if (stat(full_path, &statbuf) == 0)
-                {
-                        free(path_copy);
-                        return (full_path);
-                }
+		if (stat(full_path, &statbuf) == 0)
+		{
+			free(path_copy);
+			return (full_path);
+		}
 
-                free(full_path);
-                token = strtok(NULL, ":");
-        }
+		free(full_path);
+		token = strtok(NULL, ":");
+	}
 
-        free(path_copy);
-        return NULL;
+	free(path_copy);
+	return NULL;
 }
 
 /**
@@ -69,9 +69,9 @@ char *find_command_in_path(char *command)
  */
 void execute_command(char *path, char **args)
 {
-        if (execve(path, args, environ) == -1)
-        {
-                perror("execve");
-        }
-        exit(EXIT_FAILURE);
+	if (execve(path, args, environ) == -1)
+	{
+	perror("execve");
+	}
+	exit(EXIT_FAILURE);
 }
