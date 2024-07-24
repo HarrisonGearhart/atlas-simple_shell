@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/wait.h>
-#include "TEST_shell.h"
+#include "shell.h"
 
 /**
  * read_line - Read a line of input from stdin
