@@ -17,8 +17,7 @@ int main(void)
 	char **args; /* array of arguments parsed from input line */
 	int status; /* status of last executed command */
 
-	do
-	{
+	do {
 		printf("($) "); /* display prompt */
 		line = read_line(); /* read line of input */
 		args = parse_line(line); /* parse line into arguments */
@@ -27,8 +26,7 @@ int main(void)
 		/* free allocated memory */
 		free(line);
 		free(args);
-	}
-	while (status); /* loop until user exits */
+	} while (status); /* loop until user exits */
 
 	return (0); /* exit shell */
 }
