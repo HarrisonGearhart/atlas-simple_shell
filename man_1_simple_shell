@@ -1,4 +1,63 @@
-.TH man 1 "July 29 2024" "simple_shell man page"
+.TH man atlas-simple_shell 1 "2024-07-21" "1.0" "Simple Shell Manual"
 
-.SH H
+.SH NAME
+atlas-simple_shell \- a custom Unix shell implementaion
 
+.SH SYNOPSIS
+.B atlas-simple_shell
+.RI [options]
+
+.SH DESCRIPTION
+.B atlas-simple_shell
+is a custom Unix shell that replicates the functionality of a traditional
+Unix shell. It reads commands from standard input, executes them, and
+handles errors. The shell provides a prompt for the user input and 
+supports the execution of commands with and without arguments. It also
+implements built-in commands like 'exit' and 'env', and uses the PATH
+environment variable to locate executables.
+
+.SH EXAMPLES
+Here are some examples of how to use
+.B atlas-simple_shelll
+.PP
+To start the shell:
+.RS
+.nf
+\fC$ ./hsh\fR
+.fi
+.RE
+
+.PP
+To execute a command:
+.RS
+.nf
+\fC($) /bin/ls\fR
+.fi
+.RE
+
+.PP
+To use the 'exit' built-in command:
+.RS
+.nf
+\fC($) exit\fR
+.fi
+.RE
+
+.PP
+To use the 'env' built-in command:
+.RS
+.nf
+\fC($) env\fR
+.fi
+.RE
+
+.SH AUTHORS
+.B Ari Williams
+<R> <mariel.williams@atlasschool.com>
+
+.B Harrison Gearhart
+<R> <harrison@example.com>
+
+.SH SEE ALSO
+.BR sh (1),
+.BR bash (1)
