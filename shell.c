@@ -18,7 +18,7 @@ char *read_line(void)
 	/* read line from stdin */
 	if (getline(&line, &bufsize, stdin) == -1)
 	{
-	if (feof(stdin))
+	        if (feof(stdin))
 		{
 			/* end of file (Ctrl+D) was received */
 			exit(EXIT_SUCCESS);
@@ -47,7 +47,7 @@ char **parse_line(char *line)
 	char *token;
 
 	if (!tokens)
-        {
+	{
 		/* memory allocation error */
 		fprintf(stderr, "allocation error\n");
 		exit(EXIT_FAILURE);
