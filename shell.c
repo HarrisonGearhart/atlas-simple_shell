@@ -136,12 +136,10 @@ int execute(char **args)
 	else
 	{
 	/*parent process */
-		do
-		{
+		do {
 			/* wait for child process to terminate */
 			waitpid(pid, &status, WUNTRACED);
-		}
-		while (!WIFEXITED(status) && !WIFSIGNALED(status));
+		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
 	}
 
 	if (command_path != args[0])
