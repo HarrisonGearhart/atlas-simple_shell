@@ -47,7 +47,7 @@ char **parse_line(char *line)
 	char *token;
 
 	if (!tokens)
- 	{
+        {
 		/* memory allocation error */
 		fprintf(stderr, "allocation error\n");
 		exit(EXIT_FAILURE);
@@ -60,11 +60,11 @@ char **parse_line(char *line)
 		tokens[position++] = token;
 
 		/* reallocate memory if buffer is exceeded */
-	        if (position >= bufsize)
+		if (position >= bufsize)
 		{
 			bufsize += BUFFER_SIZE;
 			tokens = realloc(tokens, bufsize * sizeof(char *));
-        
+
 			if (!tokens)
 			{
 				/* mem realloc error */
@@ -97,12 +97,12 @@ int execute(char **args)
 		return (1);
 	}
 
-	if(strcmp(args[0], "exit") == 0) /* check for exit command */
+	if (strcmp(args[0], "exit") == 0) /* check for exit command */
 	{
 		return (0); /* terminate shell */
 	}
 
-	if(strcmp(args[0], "env") == 0)
+	if (strcmp(args[0], "env") == 0)
 	{
 		print_env();
 		return (1);
@@ -110,7 +110,7 @@ int execute(char **args)
 
 	if (command_exists_in_current_dir(args[0]))
 	{
-		command_path = args [0];
+		command_path = args[0];
 	}
 	else
 	{
@@ -118,7 +118,7 @@ int execute(char **args)
 		if (command_path == NULL)
 		{
 			fprintf(stderr, "%s: command not found\n", args[0]);
- 			return (1);
+			return (1);
 		}
 	}
 
