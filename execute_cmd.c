@@ -17,7 +17,8 @@ extern char **environ; /* declare environ */
 int command_exists_in_current_dir(char *command)
 {
 	struct stat statbuf;
-	return (stat(command, &statbuf) ==0);
+	
+        return (stat(command, &statbuf) == 0);
 }
 
 /**
@@ -59,7 +60,7 @@ char *find_command_in_path(char *command)
 	}
 
 	free(path_copy);
-	return NULL;
+	return (NULL);
 }
 
 /**
