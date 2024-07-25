@@ -76,3 +76,17 @@ void execute_command(char *path, char **args)
 	}
 	exit(EXIT_FAILURE);
 }
+
+/**
+ * print_env - Prints current environment variables
+ */
+void print_env(void)
+{
+	char **env = environ;
+
+	while (*env)
+	{
+		printf("%s\n", *env);
+		env++;
+	}
+}
