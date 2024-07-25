@@ -67,14 +67,17 @@ char *find_command_in_path(char *command)
  * execute_command = Execute a command using execve
  * @path: Path of the command
  * @args: Array of arguments
+ *
+ * Return: Status of executed command
  */
-void execute_command(char *path, char **args)
+int execute_command(char **args, char *path)
 {
 	if (execve(path, args, environ) == -1)
 	{
-	perror("execve");
+		perror("execve");
+		return (EXIT_FAILURE);
 	}
-	exit(EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }
 
 /**
