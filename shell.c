@@ -126,7 +126,8 @@ int execute(char **args)
 	if (pid == 0)
 	{
 		/* child process */
-		execute_command(command_path, args);
+		execute_command(args, command_path);
+		exit(EXIT_FAILURE); /* if execve fails */
 	}
 	else if (pid < 0)
 	{
