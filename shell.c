@@ -21,7 +21,7 @@ char *read_line(void)
 
 	if (len == -1)
 	{
-		if (line);
+		if (line)
 		{
 			/* if line not NULL, free alloc mem */
 			free(line);
