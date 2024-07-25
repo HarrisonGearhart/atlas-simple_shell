@@ -135,7 +135,7 @@ int execute(char **args)
 	}
 	else
 	{
-	/*parent process */
+		/*parent process */
 		do {
 			/* wait for child process to terminate */
 			waitpid(pid, &status, WUNTRACED);
