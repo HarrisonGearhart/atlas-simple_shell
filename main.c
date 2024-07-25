@@ -13,8 +13,8 @@
  */
 int main(void)
 {
-	char *line; /* stores input line */
-	char **args; /* array of arguments parsed from input line */
+	char *line = NULL; /* stores input line */
+	char **args = NULL; /* array of arguments parsed from input line */
 	int status; /* status of last executed command */
 
 	do {
