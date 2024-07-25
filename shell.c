@@ -14,24 +14,24 @@ char *read_line(void)
 {
 	char *line = NULL; /* pointer to store input line */
 	size_t bufsize = 0; /* buffer size for getline */
+	ssize_t len;
 
 	/* read line from stdin */
-	if (getline(&line, &bufsize, stdin) == -1)
+	len = getline(&line, &bufsize, stdin);
+
+	if (len == -1)
 	{
-		if (feof(stdin))
+		if (line);
 		{
-			/* end of file (Ctrl+D) was received */
-			exit(EXIT_SUCCESS);
+			/* if line not NULL, free alloc mem */
+			free(line);
 		}
-		else
-		{
-			/* error occured while reading line */
-			perror("read_line");
-			exit(EXIT_FAILURE);
-		}
+
+		/* exit if error or EOF (Ctrl+D) */
+		exit(EXIT_SUCCESS);
 	}
 
-	return (line); /* read line */
+	return (line); /* return read line */
 }
 
 /**
