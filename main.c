@@ -26,6 +26,9 @@ int main(void)
 		/* free allocated memory */
 		free(line);
 		free(args);
+
+		if (status == 0)
+			break; /* exit loop if status 0 */ 
 	} while (status); /* loop until user exits */
 
 	return (0); /* exit shell */
