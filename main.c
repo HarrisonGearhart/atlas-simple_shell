@@ -17,14 +17,18 @@ int main(void)
 	char **commands = NULL; /* array commands separated by pipes */
 	int num_commands = 0; /* number of commands */
 	int status = 1; /* status of last executed command */
+	size_t bufsize = 0;
 
 	do {
 		printf("($) "); /* display prompt */
-		line = read_line(); /* read line of input */
-
-		if (line[0] == '\n' || line[0] == '\0')
+		if (getline(&line, &bufsize, stdin) == -1)
 		{
 			free(line);
+			break;
+		}
+
+		if (line[0] == '\n')
+		{
 			continue;
 		}
 
@@ -39,8 +43,6 @@ int main(void)
 			status = execute(commands);
 		}
 
-		/* free allocated memory */
-		free(line);
 		free(commands);
 
 	} while (status); /* loop until user exits */
