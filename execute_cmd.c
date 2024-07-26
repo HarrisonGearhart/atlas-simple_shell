@@ -88,7 +88,7 @@ char *get_command_path(char *command)
 	if (command_exists_in_current_dir(command))
 	{
 		command_path = command;
-	{
+	}
 	else
 	{
 		command_path = find_command_in_path(command);
