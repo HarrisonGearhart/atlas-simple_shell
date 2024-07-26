@@ -5,8 +5,6 @@
 #include <string.h>
 #include "shell.h"
 
-extern char **environ;
-
 /**
  * command_exists_in_current_dir - Check if command exists in
  * current directory
@@ -95,18 +93,4 @@ char *get_command_path(char *command)
 	}
 
 	return (command_path);
-}
-
-/**
- * print_env - Prints current environment variables
- */
-void print_env(void)
-{
-	char **env = environ;
-
-	while (*env)
-	{
-		printf("%s\n", *env);
-		env++;
-	}
 }
