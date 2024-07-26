@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/wait.h>
 #include "shell.h"
 
 /**
@@ -155,7 +156,7 @@ int handle_builtin_commands(char **args)
  */
 void execute_pipes(char **commands, int num_commands)
 {
-	int pipefd[2];
+	int pipe_fds[2];
 	int i;
 	pid_t pid;
 
@@ -179,7 +180,7 @@ void execute_pipes(char **commands, int num_commands)
 			dup2(pipe_fds[1], STDOUT_FILENO);
 			close(pipe_fds[0]);
 			close(pipe_fds[1]);
-			execute(commands[i]); /* execute before pipe */
+			execute(parse_line(command[i], &num_commands));
 			exit(EXIT_FAILURE);
 		}
 		else
@@ -191,5 +192,5 @@ void execute_pipes(char **commands, int num_commands)
 		}
 	}
 
-	execute(commands[num_commands - 1]); /* execute last command */
+	execute(parse_line(commands[num_commands -1], &num_commands));
 }
