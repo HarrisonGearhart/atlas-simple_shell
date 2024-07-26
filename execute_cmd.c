@@ -5,7 +5,7 @@
 #include <string.h>
 #include "shell.h"
 
-char **environ;
+extern char **environ;
 
 /**
  * command_exists_in_current_dir - Check if command exists in
