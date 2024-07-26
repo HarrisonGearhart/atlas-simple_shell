@@ -5,6 +5,8 @@
 #include <sys/wait.h>
 #include "shell.h"
 
+extern char **environ;
+
 /**
  * read_line - Read a line of input from stdin
  *
