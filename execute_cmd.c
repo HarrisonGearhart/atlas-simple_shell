@@ -70,9 +70,9 @@ char *find_command_in_path(char *command)
  */
 void execute_command_in_child_process(char **args, char *command_path)
 {
-        if (execvp(command_path, args) == -1)
-                perror("hsh");
-        exit(EXIT_FAILURE);
+	if (execvp(command_path, args) == -1)
+		perror("hsh");
+	exit(EXIT_FAILURE);
 }
 
 /**
@@ -83,18 +83,18 @@ void execute_command_in_child_process(char **args, char *command_path)
  */
 char *get_command_path(char *command)
 {
-        char *command_path;
+	char *command_path;
 
-        if (command_exists_in_current_dir(command))
-        {
-                command_path = command;
-        }
-        else
-        {
-                command_path = find_command_in_path(command);
-        }
+	if (command_exists_in_current_dir(command))
+	{
+		command_path = command;
+	{
+	else
+	{
+		command_path = find_command_in_path(command);
+	}
 
-        return (command_path);
+	return (command_path);
 }
 
 /**
