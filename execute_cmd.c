@@ -108,7 +108,6 @@ void print_custom_env(void)
 		"USER",
 		"SHELL",
 		"LANG",
-
 		NULL
 	};
 

@@ -40,7 +40,7 @@ char *read_line(void)
  *
  * Return: Array of tokens
  */
-char **parse_line(char *line int *num_commands))
+char **parse_line(char *line, int *num_commands)
 {
 	int bufsize = BUFFER_SIZE, position = 0;
 	char **tokens = malloc(bufsize * sizeof(char *));
@@ -164,31 +164,40 @@ int handle_builtin_commands(char **args)
 void execute_pipes(char **commands, int num_commands)
 {
 	int pipefd[2];
-	int prev_pipefd[2] = {-1, -1};
+	int i;
+	pid_t pid;
 
 	for (int i = 0; i < num_commands, i++)
 	{
-		pipe(pipefd);
-
-		if (fork() ==0)
+		if (pipe(pipe_fds) == -1)
 		{
-			if (prev_pipefd[0] != -1)
-			{
-				dup2(prev_pipefd[0], STDIN_FILENO);
-				close(prev_pipefd[0]);
-			}
-			close(pipefd[0]);
-			close(pipefd[1]);
-			execute_command_in_child_process(commands[i]);
+			perror("pipe");
+			exit(EXIT_FAILURE);
 		}
 
-		close(pipefd[1]);
-		if (prev_pipefd[0] != -1)
+		pid = fork();
+		if (pid == -1)
 		{
-			close(prev_pipefd[0]);
+			perror("fork");
+			exit(EXIT_FAILURE);
 		}
-		prev_pipefd[0] = pipefd[0];
+
+		if (pid == 0)
+		{
+			dup2(pipe_fds[1], STDOUT_FILENO);
+			close(pipe_fds[0]);
+			close(pipe_fds[1]);
+			execute(commands[i]); /* execute before pipe */
+			exit(EXIT_FAILURE);
+		}
+		else
+		{
+			dup2(pipe_fds[0], STDIN_FILENO);
+			close(pipe_fds[0]);
+			close(pipe_fds[1]);
+			wait(NULL);
+		}
 	}
 
-	while (wait(NULL) > 0);
+	execute(commands[num_commands - 1]); /* execute last command */
 }

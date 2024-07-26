@@ -25,11 +25,11 @@ int main(void)
 
 		if (num_commands > 1)
 		{
-			execute_pipes(command, num_commands);
+			execute_pipes(commands, num_commands);
 		}
 		else
 		{
-			status = execute(commands[0]);
+			status = execute(commands);
 		}
 
 		/* free allocated memory */
