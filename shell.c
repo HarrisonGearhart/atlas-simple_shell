@@ -117,7 +117,7 @@ int execute(char **args)
 	}
 	else
 	{
-		do{
+		do {
 			waitpid(pid, &status, WUNTRACED);
 		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
 	}
@@ -137,7 +137,7 @@ int execute(char **args)
  */
 int handle_builtin_commands(char **args)
 {
-	if(strcmp (args[0], "exit") == 0)
+	if (strcmp (args[0], "exit") == 0)
 		return (0);
 
 	if (strcmp(args[0], "env") == 0)
@@ -145,6 +145,6 @@ int handle_builtin_commands(char **args)
 		print_env();
 		return (1);
 	}
-	
+
 	return (-1);
 }
