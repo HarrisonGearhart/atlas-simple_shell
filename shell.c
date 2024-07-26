@@ -142,14 +142,20 @@ int handle_builtin_commands(char **args)
 
 	if (strcmp(args[0], "env") == 0)
 	{
-		char *var;
-		char **env = environ;
+		FILE *fp;
+		char path[1035];
 
-		while (*env)
+		fp = popen("env", "r");
+		if (fp == NULL)
 		{
-			printf("%s\n", *env);
-			env++;
+			perror("popen");
+			return (1);
 		}
+
+		while (fgets(path, sizeof(path) -1, fp) != NULL)
+			printf("%s", path);
+
+		pclose(fp)
 		return (1);
 	}
 	return (-1);
