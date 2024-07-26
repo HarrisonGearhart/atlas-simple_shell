@@ -93,59 +93,93 @@ int execute(char **args)
 	char *command_path;
 
 	if (args[0] == NULL) /* emplty command entered */
+		return (1);
+	
+	status = handle_builtin_commands(args);
+	if (status != -1)
+		return (status);
+
+	command_path = get_command_path(args[0]);
+	if (command_path == NULL)
 	{
+		fprintf(stderr, "%s: command not found\n", args[0]);
 		return (1);
 	}
 
-	if (strcmp(args[0], "exit") == 0) /* check for exit command */
+	pid = fork();
+	if (pid == 0)
 	{
-		return (0); /* terminate shell */
+		execute_command_in_child_process(args, command_path);
 	}
+	else if (pid < 0)
+	{
+		perror("fork");
+	}
+	else
+	{
+		do
+		{
+			waitpid(pid, &status, WUNTRACED);
+		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
+	}
+
+	if (command_path != args[0])
+		free(command_path);
+
+	return (1);
+}
+
+/**
+ * handle_builtin_commands - Handles built_in shell commands
+ * @args: Array of command arguments
+ *
+ * Return: 0 if command is "exit", 1 if command is "env", -1
+ * otherwise
+ */
+int handle_builtin_commands(char **args)
+{
+	if(strcmp (args[0], "exit") == 0)
+		return (0);
 
 	if (strcmp(args[0], "env") == 0)
 	{
 		print_env();
 		return (1);
 	}
+	
+	return (-1);
+}
 
-	if (command_exists_in_current_dir(args[0]))
+/**
+ * execute_command_in_child_process - Executes command in child process
+ * @args: Array of command arguments
+ * @command_path: Path to the command
+ */
+void execute_command_in_child_process(char **args, char *command_path)
+{
+	if (execvp(command_path, args) == -1)
+		perror("hsh");
+	exit(EXIT_FAILURE);
+}
+
+/**
+ * get_command_path - Gets the path to a command
+ * @command: Command name
+ *
+ * Return: Path to the command, or NULL if command not found
+ */
+char *get_command_path(char *command)
+{
+	char *command_path;
+
+	if (command_exists_in_current_dir(command))
 	{
-		command_path = args[0];
+		command_path = command;
 	}
 	else
 	{
-		command_path = find_command_in_path(args[0]);
-		if (command_path == NULL)
-		{
-			fprintf(stderr, "%s: command not found\n", args[0]);
-			return (1);
-		}
+		command_path = find_command_in_path(command);
 	}
 
-	pid = fork(); /* create new process */
-	if (pid == 0)
-	{
-		/* child process */
-		execute_command(args, command_path);
-	}
-	else if (pid < 0)
-	{
-		/* error forking */
-		perror("fork");
-	}
-	else
-	{
-		/*parent process */
-		do {
-			/* wait for child process to terminate */
-			waitpid(pid, &status, WUNTRACED);
-		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
-	}
-
-	if (command_path != args[0])
-	{
-		free(command_path);
-	}
-
-	return (1); /* continue running shell */
+	return (command_path);
 }

@@ -14,7 +14,9 @@ char **parse_line(char *line);
 int execute(char **args);
 int command_exists_in_current_dir(char *command);
 char *find_command_in_path(char *command);
-int execute_command(char **args, char *path);
+int handle_builtin_commands(char **args);
+void execute_command_in_child_process(char **args, char *command_path);
+char *get_command_path(char *command);
 void print_env(void);
 
 #endif
