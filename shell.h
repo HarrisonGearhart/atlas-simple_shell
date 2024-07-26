@@ -10,7 +10,7 @@
 #include <string.h> /* string manipualtion */
 
 char *read_line(void);
-char **parse_line(char *line);
+char **parse_line(char *line, int *num_commands);
 int execute(char **args);
 int command_exists_in_current_dir(char *command);
 char *find_command_in_path(char *command);
@@ -18,5 +18,6 @@ int handle_builtin_commands(char **args);
 void execute_command_in_child_process(char **args, char *command_path);
 char *get_command_path(char *command);
 void print_custom_env(void);
+void execute_pipes(char **commands, int num_commands);
 
 #endif

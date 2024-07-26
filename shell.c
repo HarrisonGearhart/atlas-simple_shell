@@ -40,7 +40,7 @@ char *read_line(void)
  *
  * Return: Array of tokens
  */
-char **parse_line(char *line)
+char **parse_line(char *line int *num_commands))
 {
 	int bufsize = BUFFER_SIZE, position = 0;
 	char **tokens = malloc(bufsize * sizeof(char *));
@@ -53,31 +53,35 @@ char **parse_line(char *line)
 		exit(EXIT_FAILURE);
 	}
 
+	token = strtok(line, "|");
+	while
+
 	/* tokenize input line using specified delimiters */
 	token = strtok(line, DELIM);
 	while (token != NULL)
 	{
-		tokens[position++] = token;
-
-		/* reallocate memory if buffer is exceeded */
-		if (position >= bufsize)
+		char *cmd_token = strtok(token, DELIM);
+		while (cmd_token != NULL)
 		{
-			bufsize += BUFFER_SIZE;
-			tokens = realloc(tokens, bufsize * sizeof(char *));
-
-			if (!tokens)
+			tokens[position++] = cmd_token;
+			if (position >= bufsize)
 			{
-				/* mem realloc error */
-				fprintf(stderr, "allocation error\n");
-				exit(EXIT_FAILURE);
+				bufsize += BUFFER_SIZE;
+				tokens = realloc(tokens, bufsize *sizeof(char *));
+				if (!tokens)
+				{
+					fprintf(stderr, "allocation error\n");
+					exit(EXIT_FAILURE);
+				}
 			}
+			cmd_token = strtok(NULL, DELIM);
 		}
-
-		/* get next token */
-		token = strtok(NULL, DELIM);
+		tokens[position++] = NULL;
+		(*num_commands)++;
+		token = strtok(NULL, "|");
 	}
-	tokens[position] = NULL; /* null terminate array of tokens */
-	return (tokens); /* array of tokens */
+	tokens[position] = NULL;
+	return (tokens);
 }
 
 /**
@@ -146,4 +150,45 @@ int handle_builtin_commands(char **args)
 		return (1);
 	}
 	return (-1);
+}
+
+/**
+ * execute_pipes - Executes commands separated by pipes
+ * @commands: Array of commands
+ * @num_commands: Number of commands
+ *
+ * Description: Forks processes and sets up pipes to execute
+ * commands separated by the pipe symbol ('|'). The output of
+ * one command is used as the input for the next command.
+ */
+void execute_pipes(char **commands, int num_commands)
+{
+	int pipefd[2];
+	int prev_pipefd[2] = {-1, -1};
+
+	for (int i = 0; i < num_commands, i++)
+	{
+		pipe(pipefd);
+
+		if (fork() ==0)
+		{
+			if (prev_pipefd[0] != -1)
+			{
+				dup2(prev_pipefd[0], STDIN_FILENO);
+				close(prev_pipefd[0]);
+			}
+			close(pipefd[0]);
+			close(pipefd[1]);
+			execute_command_in_child_process(commands[i]);
+		}
+
+		close(pipefd[1]);
+		if (prev_pipefd[0] != -1)
+		{
+			close(prev_pipefd[0]);
+		}
+		prev_pipefd[0] = pipefd[0];
+	}
+
+	while (wait(NULL) > 0);
 }

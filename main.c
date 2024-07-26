@@ -14,18 +14,27 @@
 int main(void)
 {
 	char *line = NULL; /* stores input line */
-	char **args = NULL; /* array of arguments parsed from input line */
+	char **commands = NULL; /* array commands separated by pipes */
+	int num_commands = 0; /* number of commands */
 	int status; /* status of last executed command */
 
 	do {
 		printf("($) "); /* display prompt */
 		line = read_line(); /* read line of input */
-		args = parse_line(line); /* parse line into arguments */
-		status = execute(args); /* execute parsed args */
+		commands = parse_line(line, &num_commands); /* parse into commands*/
+
+		if (num_commands > 1)
+		{
+			execute_pipes(command, num_commands);
+		}
+		else
+		{
+			status = execute(commands[0]);
+		}
 
 		/* free allocated memory */
 		free(line);
-		free(args);
+		free(commands);
 
 	} while (status); /* loop until user exits */
 
