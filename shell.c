@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <sys/wait.h>
 #include "shell.h"
 
 /**
@@ -53,34 +52,27 @@ char **parse_line(char *line, int *num_commands)
 		exit(EXIT_FAILURE);
 	}
 
-	token = strtok(line, "|");
-	while
-
 	/* tokenize input line using specified delimiters */
 	token = strtok(line, DELIM);
 	while (token != NULL)
 	{
-		char *cmd_token = strtok(token, DELIM);
-		while (cmd_token != NULL)
+		tokens[position++] = token;
+
+		if (position >= bufsize)
 		{
-			tokens[position++] = cmd_token;
-			if (position >= bufsize)
+			bufsize += BUFFER_SIZE;
+			tokens = realloc(tokens, bufsize *sizeof(char *));
+			if (!tokens)
 			{
-				bufsize += BUFFER_SIZE;
-				tokens = realloc(tokens, bufsize *sizeof(char *));
-				if (!tokens)
-				{
-					fprintf(stderr, "allocation error\n");
-					exit(EXIT_FAILURE);
-				}
+				fprintf(stderr, "allocation error\n");
+				exit(EXIT_FAILURE);
 			}
-			cmd_token = strtok(NULL, DELIM);
 		}
-		tokens[position++] = NULL;
-		(*num_commands)++;
-		token = strtok(NULL, "|");
+			token = strtok(NULL, DELIM);
 	}
 	tokens[position] = NULL;
+
+	*num_commands = position;
 	return (tokens);
 }
 
@@ -167,7 +159,7 @@ void execute_pipes(char **commands, int num_commands)
 	int i;
 	pid_t pid;
 
-	for (int i = 0; i < num_commands, i++)
+	for (i = 0; i < num_commands - 1; i++)
 	{
 		if (pipe(pipe_fds) == -1)
 		{
