@@ -94,3 +94,32 @@ char *get_command_path(char *command)
 
 	return (command_path);
 }
+
+/**
+ * print_custom_env - Print a predefined list of environmental variables
+ *
+ * Return: void
+ */
+void print_custom_env(void)
+{
+	char *env_vars[] = {
+		"PATH",
+		"HOME",
+		"USER",
+		"SHELL",
+		"LANG",
+
+		NULL
+	};
+
+	char **env = env_vars;
+	while (*env)
+	{
+		char *value = getenv(*env);
+		if (value)
+		{
+			printf("%s=%s\n", *env, value);
+		}
+		env++;
+	}
+}

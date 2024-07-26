@@ -17,5 +17,6 @@ char *find_command_in_path(char *command);
 int handle_builtin_commands(char **args);
 void execute_command_in_child_process(char **args, char *command_path);
 char *get_command_path(char *command);
+void print_custom_env(void);
 
 #endif
