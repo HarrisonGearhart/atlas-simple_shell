@@ -5,8 +5,6 @@
 #include <sys/wait.h>
 #include "shell.h"
 
-extern char **environ;
-
 /**
  * read_line - Read a line of input from stdin
  *
@@ -144,7 +142,7 @@ int handle_builtin_commands(char **args)
 
 	if (strcmp(args[0], "env") == 0)
 	{
-		char **env = environ;
+		char **env = __environ;
 		while (*env)
 		{
 			printf("%s\n", *env);
