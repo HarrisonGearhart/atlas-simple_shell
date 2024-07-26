@@ -180,7 +180,7 @@ void execute_pipes(char **commands, int num_commands)
 			dup2(pipe_fds[1], STDOUT_FILENO);
 			close(pipe_fds[0]);
 			close(pipe_fds[1]);
-			execute(parse_line(command[i], &num_commands));
+			execute(parse_line(commands[i], &num_commands));
 			exit(EXIT_FAILURE);
 		}
 		else
