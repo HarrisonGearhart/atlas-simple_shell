@@ -94,7 +94,7 @@ int execute(char **args)
 
 	if (args[0] == NULL) /* emplty command entered */
 		return (1);
-	
+
 	status = handle_builtin_commands(args);
 	if (status != -1)
 		return (status);
@@ -148,38 +148,4 @@ int handle_builtin_commands(char **args)
 	}
 	
 	return (-1);
-}
-
-/**
- * execute_command_in_child_process - Executes command in child process
- * @args: Array of command arguments
- * @command_path: Path to the command
- */
-void execute_command_in_child_process(char **args, char *command_path)
-{
-	if (execvp(command_path, args) == -1)
-		perror("hsh");
-	exit(EXIT_FAILURE);
-}
-
-/**
- * get_command_path - Gets the path to a command
- * @command: Command name
- *
- * Return: Path to the command, or NULL if command not found
- */
-char *get_command_path(char *command)
-{
-	char *command_path;
-
-	if (command_exists_in_current_dir(command))
-	{
-		command_path = command;
-	}
-	else
-	{
-		command_path = find_command_in_path(command);
-	}
-
-	return (command_path);
 }

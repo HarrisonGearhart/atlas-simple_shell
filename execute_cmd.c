@@ -64,20 +64,37 @@ char *find_command_in_path(char *command)
 }
 
 /**
- * execute_command = Execute a command using execve
- * @path: Path of the command
- * @args: Array of arguments
- *
- * Return: Status of executed command
+ * execute_command_in_child_process - Executes command in child process
+ * @args: Array of command arguments
+ * @command_path: Path to the command
  */
-int execute_command(char **args, char *path)
+void execute_command_in_child_process(char **args, char *command_path)
 {
-	if (execve(path, args, environ) == -1)
-	{
-		perror("execve");
-		return (EXIT_FAILURE);
-	}
-	return (EXIT_SUCCESS);
+        if (execvp(command_path, args) == -1)
+                perror("hsh");
+        exit(EXIT_FAILURE);
+}
+
+/**
+ * get_command_path - Gets the path to a command
+ * @command: Command name
+ *
+ * Return: Path to the command, or NULL if command not found
+ */
+char *get_command_path(char *command)
+{
+        char *command_path;
+
+        if (command_exists_in_current_dir(command))
+        {
+                command_path = command;
+        }
+        else
+        {
+                command_path = find_command_in_path(command);
+        }
+
+        return (command_path);
 }
 
 /**
