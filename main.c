@@ -16,11 +16,18 @@ int main(void)
 	char *line = NULL; /* stores input line */
 	char **commands = NULL; /* array commands separated by pipes */
 	int num_commands = 0; /* number of commands */
-	int status; /* status of last executed command */
+	int status = 1; /* status of last executed command */
 
 	do {
 		printf("($) "); /* display prompt */
 		line = read_line(); /* read line of input */
+
+		if (line[0] == '\n' || line[0] == '\0')
+		{
+			free(line);
+			continue;
+		}
+
 		commands = parse_line(line, &num_commands); /* parse into commands*/
 
 		if (num_commands > 1)
