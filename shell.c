@@ -152,7 +152,7 @@ int handle_builtin_commands(char **args)
 			return (1);
 		}
 
-		while (fgets(path, sizeof(path) -1, fp) != NULL)
+		while (fgets(path, sizeof(path) - 1, fp) != NULL)
 			printf("%s", path);
 
 		pclose(fp);
