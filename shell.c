@@ -137,7 +137,7 @@ int execute(char **args)
  */
 int handle_builtin_commands(char **args)
 {
-	if (strcmp (args[0], "exit") == 0)
+	if (strcmp(args[0], "exit") == 0)
 		return (0);
 
 	if (strcmp(args[0], "env") == 0)
