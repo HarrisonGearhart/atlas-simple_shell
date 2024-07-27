@@ -18,6 +18,5 @@ int handle_builtin_commands(char **args);
 void execute_command_in_child_process(char **args, char *command_path);
 char *get_command_path(char *command);
 void print_custom_env(void);
-void execute_pipes(char **commands, int num_commands);
 
 #endif
