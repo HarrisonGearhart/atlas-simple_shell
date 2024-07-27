@@ -109,7 +109,7 @@ char **parse_line(char *line)
 int execute(char **args)
 {
 	int builtin_status; /* store status of built-in commands */
-	pid_t pid, wpid; /* process ID */
+	pid_t pid; /* process ID */
 	int status; /* status code for waitpid */
 
 	if (args[0] == NULL) /* empty command entered */
@@ -141,7 +141,7 @@ int execute(char **args)
 	{
 		do { /* parent process */
 			/* wait for child process to terminate */
-			wpid = waitpid(pid, &status, WUNTRACED);
+			waitpid(pid, &status, WUNTRACED);
 			/* wait until child process exited or signaled */
 		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
 	}
