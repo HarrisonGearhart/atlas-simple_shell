@@ -13,39 +13,20 @@
  */
 int main(void)
 {
-	char *line = NULL; /* stores input line */
-	char **commands = NULL; /* array commands separated by pipes */
-	int num_commands = 0; /* number of commands */
-	int status = 1; /* status of last executed command */
-	size_t bufsize = 0;
+	char *line; /* pointer holds input line */
+	char **args; /* pointer holds parsed arguments */
+	int status = 1; /* status to control loop, initialize to 1 starts loop */
 
-	do {
-		printf("($) "); /* display prompt */
-		if (getline(&line, &bufsize, stdin) == -1)
-		{
-			free(line);
-			break;
-		}
+	while (status) /* loop continues as long as status non-zero */
+	{
+		printf("$ "); /* Print shell prompt */
+		line = read_line(); /* read line of user input */
+		args = parse_line(line); /* parse input into arguments */
+		status = execute(args); /* execute parsed commands & update status */
 
-		if (line[0] == '\n')
-		{
-			continue;
-		}
+		free(line); /* free alloc mem for input line */
+		free(args); /* free alloc mem for arguments */
+	}
 
-		commands = parse_line(line, &num_commands); /* parse into commands*/
-
-		if (num_commands > 1)
-		{
-			execute_pipes(commands, num_commands);
-		}
-		else
-		{
-			status = execute(commands);
-		}
-
-		free(commands);
-
-	} while (status); /* loop until user exits */
-
-	return (0); /* exit shell */
+	return (0); /* indicate successful program termination */
 }
