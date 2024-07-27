@@ -21,8 +21,25 @@ int main(void)
 	{
 		printf("$ "); /* Print shell prompt */
 		line = read_line(); /* read line of user input */
+
+		if (line == NULL)
+		{
+			fprintf(stderr, "Error reading line\n");
+			continue;
+		}
+
 		args = parse_line(line); /* parse input into arguments */
+
+		if (args == NULL)
+		{
+			fprintf(stderr, "Error parsing line\n");
+			free(line);
+			continue;
+		}
+
 		status = execute(args); /* execute parsed commands & update status */
+
+		printf("Status after execution: %d\n", status); /* debug print */
 
 		free(line); /* free alloc mem for input line */
 		free(args); /* free alloc mem for arguments */
