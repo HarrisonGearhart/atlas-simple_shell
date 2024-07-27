@@ -108,8 +108,8 @@ char **parse_line(char *line)
  */
 int execute(char **args)
 {
-	int builtin_status;
-	pid_t pid; /* process ID */
+	int builtin_status; /* store status of built-in commands */
+	pid_t pid, wpid; /* process ID */
 	int status; /* status code for waitpid */
 
 	if (args[0] == NULL) /* empty command entered */
@@ -118,7 +118,7 @@ int execute(char **args)
 	}
 
 	/* check for built-in commands first */
-	int builtin_status = handle_builtin_commands(args);
+	builtin_status = handle_builtin_commands(args);
 	if (builtin_status != -1) /* if builtin handled, return status */
 	{
 		return (builtin_status);
@@ -129,17 +129,17 @@ int execute(char **args)
 	{
 		if (execvp(args[0], args) == -1) /* execvp failed */
 		{
-			perror("shell"); /* print error message */
+			perror("hsh"); /* print error message */
 		}
 		exit(EXIT_FAILURE); /* exit child process if execvp fails */
 	}
 	else if (pid < 0) /* error occurred while forking */
 	{
-		perror("shell");
+		perror("hsh");
 	}
 	else
 	{
-		do {
+		do { /* parent process */
 			/* wait for child process to terminate */
 			wpid = waitpid(pid, &status, WUNTRACED);
 			/* wait until child process exited or signaled */
