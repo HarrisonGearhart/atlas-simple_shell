@@ -108,6 +108,10 @@ char **parse_line(char *line)
  */
 int execute(char **args)
 {
+	int builtin_status;
+	pid_t pid; /* process ID */
+	int status; /* status code for waitpid */
+
 	if (args[0] == NULL) /* empty command entered */
 	{
 		return (1);
@@ -119,9 +123,6 @@ int execute(char **args)
 	{
 		return (builtin_status);
 	}
-
-	pid_t pid, wpid; /* process IDs */
-	int status; /* status code for waitpid */
 
 	pid = fork(); /* fork new process to execute command */
 	if (pid == 0) /* child process */
@@ -166,54 +167,4 @@ int handle_builtin_commands(char **args)
 		return (1);
 	}
 	return (-1);
-}
-
-/**
- * execute_pipes - Executes commands separated by pipes
- * @commands: Array of commands
- * @num_commands: Number of commands
- *
- * Description: Forks processes and sets up pipes to execute
- * commands separated by the pipe symbol ('|'). The output of
- * one command is used as the input for the next command.
- */
-void execute_pipes(char **commands, int num_commands)
-{
-	int pipe_fds[2];
-	int i;
-	pid_t pid;
-
-	for (i = 0; i < num_commands - 1; i++)
-	{
-		if (pipe(pipe_fds) == -1)
-		{
-			perror("pipe");
-			exit(EXIT_FAILURE);
-		}
-
-		pid = fork();
-		if (pid == -1)
-		{
-			perror("fork");
-			exit(EXIT_FAILURE);
-		}
-
-		if (pid == 0)
-		{
-			dup2(pipe_fds[1], STDOUT_FILENO);
-			close(pipe_fds[0]);
-			close(pipe_fds[1]);
-			execute(parse_line(commands[i], &num_commands));
-			exit(EXIT_FAILURE);
-		}
-		else
-		{
-			dup2(pipe_fds[0], STDIN_FILENO);
-			close(pipe_fds[0]);
-			close(pipe_fds[1]);
-			wait(NULL);
-		}
-	}
-
-	execute(parse_line(commands[num_commands -1], &num_commands));
 }

@@ -10,7 +10,7 @@
 #include <string.h> /* string manipualtion */
 
 char *read_line(void);
-char **parse_line(char *line, int *num_commands);
+char **parse_line(char *line);
 int execute(char **args);
 int command_exists_in_current_dir(char *command);
 char *find_command_in_path(char *command);
