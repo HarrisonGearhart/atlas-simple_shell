@@ -11,10 +11,11 @@
  */
 int main(int argc, char **argv)
 {
-	(void)argc; /* prevent unused parameter warning */
 	char *line; /* pointer holds input line */
 	char **parsed_args; /* pointer holds parsed arguments */
 	int status; /* status to control loop */
+
+	(void)argc; /* prevent unused parameter warning */
 
 	status = 0; /* initialize to 0 (run) */
 
@@ -45,9 +46,9 @@ int main(int argc, char **argv)
 		free(line); /* free alloc mem for line */
 		free(parsed_args); /* free alloc mem for arguments */
 
-		if (status == 1)
+		if (status == 1 || status == 0)
 		{
-			break; /* exit loop if status 1 (normal exit) */
+			break; /* exit loop if status 1 (normal exit) or 0 (exit command*/
 		}
 	}
 
