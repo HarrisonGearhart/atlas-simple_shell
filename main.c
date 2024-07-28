@@ -16,7 +16,8 @@ int main(int argc, char **argv)
 	char **parsed_args; /* pointer holds parsed arguments */
 	int status = 0; /* status to control loop, initialize to 0 (run) */
 
-	do {
+	while (1)
+	{
 		printf("($) "); /* print shell prompt */
 		line = read_line(); /* read user input line */
 
@@ -46,8 +47,5 @@ int main(int argc, char **argv)
 		{
 			break; /* exit loop if status 1 (normal exit) */
 		}
-
-	} while (status == 0); /* continue loop while status 0 (run) */
-
-	return ((status == 1) ? 0 : 1); /* 0 normal exit, 1 error exit */
+	}
 }
