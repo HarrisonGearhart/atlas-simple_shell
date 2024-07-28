@@ -107,22 +107,26 @@ char **parse_line(char *line)
  *
  * Return: Status code based on execution result
  */
-int execute(char **args, char prog_name)
+int execute(char **args, char *prog_name)
 {
+	int built_in_status;
+	pid_t pid;
+	int status;
+
 	if (args[0] == NULL)
 	{
 		return (0); /* no command entered */
 	}
 
 	/* check for built in commands */
-	int built_in_status = handle_builtin_commands(args);
+	built_in_status = handle_builtin_commands(args);
 	if (built_in_status != -1)
 	{
 		return (built_in_status); /* status based on built-in */
 	}
 
 	/* fork child process to execute command */
-	pit_t pid = fork();
+	pid = fork();
 	if (pid == -1)
 	{
 		perror("fork failed");
@@ -134,7 +138,7 @@ int execute(char **args, char prog_name)
 		if (execvp(args[0], args) == -1)
 		{
 			perror(prog_name); /* if exec fails */
-			exit(1); /* normal exit */
+			exit(2); /* error exit */
 		}
 	}
 	else /* parent process */

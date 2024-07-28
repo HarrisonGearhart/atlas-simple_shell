@@ -9,7 +9,7 @@
  *
  * Return 0 on success, 1 on error
  */
-int main(int argc, char **argv)
+int main(int args, char **argv)
 {
 	char *line; /* pointer holds input line */
 	char **args; /* pointer holds parsed arguments */
