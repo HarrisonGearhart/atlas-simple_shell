@@ -146,7 +146,7 @@ int execute(char **args, char *prog_name)
 		waitpid(pid, &status, 0); /* wait for child process to finish */
 		if (WIFEXITED(status))
 		{
-			return (WEXISTATUS(status)); /* child process exit status */
+			return (WEXITSTATUS(status)); /* child process exit status */
 		}
 		return (2); /* error exit */
 	}
