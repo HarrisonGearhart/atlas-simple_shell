@@ -12,7 +12,7 @@
 int main(int args, char **argv)
 {
 	char *line; /* pointer holds input line */
-	char **args; /* pointer holds parsed arguments */
+	char **parsed_args; /* pointer holds parsed arguments */
 	int status = 0; /* status to control loop, initialize to 0 (run) */
 
 	do {
@@ -26,9 +26,9 @@ int main(int args, char **argv)
 			continue; /* skip rest of loop & prompt again */
 		}
 
-		args = parse_line(line); /* parse input into arguments */
+		parsed_args = parse_line(line); /* parse input into arguments */
 
-		if (args == NULL)
+		if (parsed_args == NULL)
 		{
 			fprintf(stderr, "Error parsing line\n"); /* if parsing fails */
 			free(line); /* free alloc mem for line */
@@ -36,10 +36,10 @@ int main(int args, char **argv)
 			continue; /* skip rest of loop & prompt again */
 		}
 
-		status = execute(args, argv[0]); /* execute command & update status */
+		status = execute(parsed_args, argv[0]); /* execute command & update status */
 
 		free(line); /* free alloc mem for line */
-		free(args); /* free alloc mem for arguments */
+		free(parsed_args); /* free alloc mem for arguments */
 
 		if (status == 1)
 		{
