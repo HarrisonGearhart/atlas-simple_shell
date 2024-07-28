@@ -8,10 +8,11 @@
 #include <stdlib.h> /* free, exit, EXIT_FAILURE */
 #include <unistd.h> /* POSIX API functions */
 #include <string.h> /* string manipualtion */
+#include <stddef.h> /* NULL */
 
 char *read_line(void);
 char **parse_line(char *line);
-int execute(char **args);
+int execute(char **args, char *prog_name);
 int command_exists_in_current_dir(char *command);
 char *find_command_in_path(char *command);
 int handle_builtin_commands(char **args);

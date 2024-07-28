@@ -102,51 +102,51 @@ char **parse_line(char *line)
 
 /**
  * execute - Execute shell built-in or launch program
- * @args: Array of arguments
+ * @args: Array of command arguments
+ * @prog_name: name of program for error message
  *
- * Return: 1 if shell should continue running, 0 if should terminate
+ * Return: Status code based on execution result
  */
-int execute(char **args)
+int execute(char **args, char prog_name)
 {
-	int builtin_status; /* store status of built-in commands */
-	pid_t pid; /* process ID */
-	int status; /* status code for waitpid */
-
-	if (args[0] == NULL) /* empty command entered */
+	if (args[0] == NULL)
 	{
-		return (1);
+		return (0); /* no command entered */
 	}
 
-	/* check for built-in commands first */
-	builtin_status = handle_builtin_commands(args);
-	if (builtin_status != -1) /* if builtin handled, return status */
+	/* check for built in commands */
+	int built_in_status = handle_builtin_commands(args);
+	if (built_in_status != -1)
 	{
-		return (builtin_status);
+		return (built_in_status); /* status based on built-in */
 	}
 
-	pid = fork(); /* fork new process to execute command */
+	/* fork child process to execute command */
+	pit_t pid = fork();
+	if (pid == -1)
+	{
+		perror("fork failed");
+		return (2); /* error exit */
+	}
+
 	if (pid == 0) /* child process */
 	{
-		if (execvp(args[0], args) == -1) /* execvp failed */
+		if (execvp(args[0], args) == -1)
 		{
-			perror("hsh"); /* print error message */
+			perror(prog_name); /* if exec fails */
+			exit(1); /* normal exit */
 		}
-		exit(EXIT_FAILURE); /* exit child process if execvp fails */
 	}
-	else if (pid < 0) /* error occurred while forking */
+	else /* parent process */
 	{
-		perror("hsh");
+		int status;
+		waitpid(pid, &status, 0); /* wait for child process to finish */
+		if (WIFEXITED(status))
+		{
+			return (WIFSTATUS(status)); /* child process exit status */
+		}
+		return (2); /* error exit */
 	}
-	else
-	{
-		do { /* parent process */
-			/* wait for child process to terminate */
-			waitpid(pid, &status, WUNTRACED);
-			/* wait until child process exited or signaled */
-		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
-	}
-
-	return (1); /* indicate command was executed */
 }
 
 /**

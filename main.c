@@ -3,47 +3,50 @@
 #include "shell.h"
 
 /**
- * main - Entry point for the shell program.
+ * main - Entry point for the shell program
+ * @args: Argument count
+ * @argv: Argument vector
  *
- * Description: This function initializes the shell, displays a
- * prompt, reads user input, parses the input into commands, and
- * executes the commands.
- *
- * Return: Always 0 (Success).
+ * Return 0 on success, 1 on error
  */
-int main(void)
+int main(int argc, char **argv)
 {
 	char *line; /* pointer holds input line */
 	char **args; /* pointer holds parsed arguments */
-	int status = 1; /* status to control loop, initialize to 1 starts loop */
+	int status = 0; /* status to control loop, initialize to 0 (run) */
 
-	while (status) /* loop continues as long as status non-zero */
-	{
-		printf("$ "); /* Print shell prompt */
-		line = read_line(); /* read line of user input */
+	do {
+		printf("($) "); /* print shell prompt */
+		line = read_line(); /* read user input line */
 
 		if (line == NULL)
 		{
-			fprintf(stderr, "Error reading line\n");
-			continue;
+			fprintf(stderr, "Error reading line\n"); /* if line read fails */
+			status = 2; /* set status to error exit */
+			continue; /* skip rest of loop & prompt again */
 		}
 
 		args = parse_line(line); /* parse input into arguments */
 
 		if (args == NULL)
 		{
-			fprintf(stderr, "Error parsing line\n");
-			free(line);
-			continue;
+			fprintf(stderr, "Error parsing line\n"); /* if parsing fails */
+			free(line); /* free alloc mem for line */
+			status = 2; /* set status to error exit */
+			continue; /* skip rest of loop & prompt again */
 		}
 
-		status = execute(args); /* execute parsed commands & update status */
+		status = execute(args, argv[0]); /* execute command & update status */
 
-		printf("Status after execution: %d\n", status); /* debug print */
-
-		free(line); /* free alloc mem for input line */
+		free(line); /* free alloc mem for line */
 		free(args); /* free alloc mem for arguments */
-	}
 
-	return (0); /* indicate successful program termination */
+		if (status == 1)
+		{
+			break; /* exit loop if status 1 (normal exit) */
+		}
+
+	} while (status == 0); /* continue loop while status 0 (run) */
+
+	return ((status == 1) ? 0 : 1); /* 0 normal exit, 1 error exit */
 }
