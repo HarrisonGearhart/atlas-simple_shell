@@ -138,16 +138,15 @@ int execute(char **args, char *prog_name)
 		if (execvp(args[0], args) == -1)
 		{
 			perror(prog_name); /* if exec fails */
-			exit(2); /* error exit */
+			exit(EXIT_FAILURE); /* failure status */
 		}
 	}
 	else /* parent process */
 	{
-		int status;
 		waitpid(pid, &status, 0); /* wait for child process to finish */
 		if (WIFEXITED(status))
 		{
-			return (WIFSTATUS(status)); /* child process exit status */
+			return (WEXISTATUS(status)); /* child process exit status */
 		}
 		return (2); /* error exit */
 	}

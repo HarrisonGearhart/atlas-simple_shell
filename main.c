@@ -11,6 +11,7 @@
  */
 int main(int argc, char **argv)
 {
+	(void)argc; /* prevent unused parameter warning */
 	char *line; /* pointer holds input line */
 	char **parsed_args; /* pointer holds parsed arguments */
 	int status = 0; /* status to control loop, initialize to 0 (run) */
