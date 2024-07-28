@@ -48,4 +48,6 @@ int main(int argc, char **argv)
 			break; /* exit loop if status 1 (normal exit) */
 		}
 	}
+
+	return ((status == 2) ? 1 : 0); /* 1 for error exit, 0 for normal exit */
 }
