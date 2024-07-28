@@ -4,12 +4,12 @@
 
 /**
  * main - Entry point for the shell program
- * @args: Argument count
+ * @argc: Argument count
  * @argv: Argument vector
  *
  * Return 0 on success, 1 on error
  */
-int main(int args, char **argv)
+int main(int argc, char **argv)
 {
 	char *line; /* pointer holds input line */
 	char **parsed_args; /* pointer holds parsed arguments */
