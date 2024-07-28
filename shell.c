@@ -150,6 +150,8 @@ int execute(char **args, char *prog_name)
 		}
 		return (2); /* error exit */
 	}
+	/* return value for completeness, ideally unreachable */
+	return (2); /* default error exit if all else fails */
 }
 
 /**
