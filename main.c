@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 			break;
 		}
 
-		parsed_args = parsed_line(line);
+		parsed_args = parse_line(line);
 
 		if (parsed_args == NULL)
 		{
