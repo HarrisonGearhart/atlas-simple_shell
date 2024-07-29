@@ -14,9 +14,9 @@
  */
 int command_exists_in_current_dir(char *command)
 {
-	struct stat statbuf;
+  struct stat statbuf;
 
-	return (stat(command, &statbuf) == 0);
+  return (stat(command, &statbuf) == 0);
 }
 
 /**
@@ -27,38 +27,38 @@ int command_exists_in_current_dir(char *command)
  */
 char *find_command_in_path(char *command)
 {
-	char *path_env;
-	char *path_copy;
-	char *token;
-	char *full_path;
-	struct stat statbuf;
+  char *path_env;
+  char *path_copy;
+  char *token;
+  char *full_path;
+  struct stat statbuf;
 
-	path_env = getenv("PATH");
-	if (path_env == NULL)
-	{
-	return (NULL);
-	}
+  path_env = getenv("PATH");
+  if (path_env == NULL)
+  {
+  return (NULL);
+  }
 
-	path_copy = strdup(path_env);
-	token = strtok(path_copy, ":");
+  path_copy = strdup(path_env);
+  token = strtok(path_copy, ":");
 
-	while (token != NULL)
-	{
-	full_path = malloc(strlen(token) + strlen(command) + 2);
-		sprintf(full_path, "%s/%s", token, command);
+  while (token != NULL)
+  {
+  full_path = malloc(strlen(token) + strlen(command) + 2);
+    sprintf(full_path, "%s/%s", token, command);
 
-		if (stat(full_path, &statbuf) == 0)
-		{
-			free(path_copy);
-			return (full_path);
-		}
+    if (stat(full_path, &statbuf) == 0)
+    {
+      free(path_copy);
+      return (full_path);
+    }
 
-		free(full_path);
-		token = strtok(NULL, ":");
-	}
+    free(full_path);
+    token = strtok(NULL, ":");
+  }
 
-	free(path_copy);
-	return (NULL);
+  free(path_copy);
+  return (NULL);
 }
 
 /**
@@ -68,9 +68,9 @@ char *find_command_in_path(char *command)
  */
 void execute_command_in_child_process(char **args, char *command_path)
 {
-	if (execvp(command_path, args) == -1)
-		perror("hsh");
-	exit(EXIT_FAILURE);
+  if (execvp(command_path, args) == -1)
+    perror("hsh");
+  exit(EXIT_FAILURE);
 }
 
 /**
@@ -81,18 +81,18 @@ void execute_command_in_child_process(char **args, char *command_path)
  */
 char *get_command_path(char *command)
 {
-	char *command_path;
+  char *command_path;
 
-	if (command_exists_in_current_dir(command))
-	{
-		command_path = command;
-	}
-	else
-	{
-		command_path = find_command_in_path(command);
-	}
+  if (command_exists_in_current_dir(command))
+  {
+    command_path = command;
+  }
+  else
+  {
+    command_path = find_command_in_path(command);
+  }
 
-	return (command_path);
+  return (command_path);
 }
 
 /**
@@ -102,23 +102,23 @@ char *get_command_path(char *command)
  */
 void print_custom_env(void)
 {
-	char *env_vars[] = {
-		"PATH",
-		"HOME",
-		"USER",
-		"SHELL",
-		"LANG",
-		NULL
-	};
+  char *env_vars[] = {
+    "PATH",
+    "HOME",
+    "USER",
+    "SHELL",
+    "LANG",
+    NULL
+  };
 
-	char **env = env_vars;
-	while (*env)
-	{
-		char *value = getenv(*env);
-		if (value)
-		{
-			printf("%s=%s\n", *env, value);
-		}
-		env++;
-	}
+  char **env = env_vars;
+  while (*env)
+  {
+    char *value = getenv(*env);
+    if (value)
+    {
+      printf("%s=%s\n", *env, value);
+    }
+    env++;
+  }
 }

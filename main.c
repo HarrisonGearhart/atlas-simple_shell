@@ -1,56 +1,52 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "shell.h"
 
 /**
- * main - Entry point for the shell program
- * @argc: Argument count
- * @argv: Argument vector
+ * main - Entry point for the shell program.
  *
- * Return 0 on success, 1 on error
+ * Description: This function initializes the shell, displays a
+ * prompt, reads user input, parses the input into commands, and
+ * executes the commands.
+ *
+ * Return: Always 0 (Success).
  */
-int main(int argc, char **argv)
+int main(void)
 {
-	char *line; /* pointer holds input line */
-	char **parsed_args; /* pointer holds parsed arguments */
-	int status; /* status to control loop */
+  char *line = NULL; /* stores input line */
+  char **commands = NULL; /* array commands separated by pipes */
+  int num_commands = 0; /* number of commands */
+  int status = 1; /* status of last executed command */
+  size_t bufsize = 0;
 
-	(void)argc; /* prevent unused parameter warning */
+  do {
+    printf("($) "); /* display prompt */
+    if (getline(&line, &bufsize, stdin) == -1)
+    {
+      free(line);
+      break;
+    }
 
-	status = 0; /* initialize to 0 (run) */
+    if (line[0] == '\n')
+    {
+      continue;
+    }
 
-	while (1)
-	{
-		printf("($) "); /* print shell prompt */
-		line = read_line(); /* read user input line */
+    commands = parse_line(line, &num_commands); /* parse into commands*/
 
-		if (line == NULL)
-		{
-			fprintf(stderr, "Error reading line\n"); /* if line read fails */
-			status = 2; /* set status to error exit */
-			continue; /* skip rest of loop & prompt again */
-		}
+    if (num_commands > 1)
+    {
+      execute_pipes(commands, num_commands);
+    }
+    else
+    {
+      status = execute(commands);
+    }
 
-		parsed_args = parse_line(line); /* parse input into arguments */
+    free(commands);
 
-		if (parsed_args == NULL)
-		{
-			fprintf(stderr, "Error parsing line\n"); /* if parsing fails */
-			free(line); /* free alloc mem for line */
-			status = 2; /* set status to error exit */
-			continue; /* skip rest of loop & prompt again */
-		}
+  } while (status); /* loop until user exits */
 
-		status = execute(parsed_args, argv[0]); /* execute command & update status */
-
-		free(line); /* free alloc mem for line */
-		free(parsed_args); /* free alloc mem for arguments */
-
-		if (status == 1 || status == 0)
-		{
-			break; /* exit loop if status 1 (normal exit) or 0 (exit command*/
-		}
-	}
-
-	return ((status == 2) ? 1 : 0); /* 1 for error exit, 0 for normal exit */
+  return (0); /* exit shell */
 }
