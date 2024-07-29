@@ -21,6 +21,8 @@ int main(int argc, char **argv)
 	while (1)
 	{
 		printf("($) ");
+		fflush(stdout);
+
 		line = read_line();
 
 		if (line == NULL)
