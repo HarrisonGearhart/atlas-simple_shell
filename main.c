@@ -1,52 +1,53 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "shell.h"
 
 /**
- * main - Entry point for the shell program.
+ * main - entry point for shell program
+ * @argc: Argument count
+ * @argv: Argument vector
  *
- * Description: This function initializes the shell, displays a
- * prompt, reads user input, parses the input into commands, and
- * executes the commands.
- *
- * Return: Always 0 (Success).
+ * Return: 0 on success, 1 on error
  */
-int main(void)
+int main(int argc, char **argv)
 {
-  char *line = NULL; /* stores input line */
-  char **commands = NULL; /* array commands separated by pipes */
-  int num_commands = 0; /* number of commands */
-  int status = 1; /* status of last executed command */
-  size_t bufsize = 0;
+	char *line;
+	char **parsed_args;
+	int status;
 
-  do {
-    printf("($) "); /* display prompt */
-    if (getline(&line, &bufsize, stdin) == -1)
-    {
-      free(line);
-      break;
-    }
+	(void)argc;
+	status = 0;
 
-    if (line[0] == '\n')
-    {
-      continue;
-    }
+	while (1)
+	{
+		printf("($) ");
+		line = read_line();
 
-    commands = parse_line(line, &num_commands); /* parse into commands*/
+		if (line == NULL)
+		{
+			printf("\n");
+			break;
+		}
 
-    if (num_commands > 1)
-    {
-      execute_pipes(commands, num_commands);
-    }
-    else
-    {
-      status = execute(commands);
-    }
+		parsed_args = parsed_line(line);
 
-    free(commands);
+		if (parsed_args == NULL)
+		{
+			free(line);
+			status = 2;
+			continue;
+		}
 
-  } while (status); /* loop until user exits */
+		status = execute(parsed_args, argv[0]);
 
-  return (0); /* exit shell */
+		free(line);
+		free(parsed_args);
+
+		if (status == 1)
+		{
+			break;
+		}
+	}
+
+	return ((status == 2) ? 1 : 0);
 }

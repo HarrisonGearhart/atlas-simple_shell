@@ -5,192 +5,176 @@
 #include <sys/wait.h>
 #include "shell.h"
 
+#define RL_BUFSIZE 1024
+
 /**
- * read_line - Read a line of input from stdin
+ * read_line - Reads a line of user input
  *
- * Return: Input line
+ * Return: Input line as a string
  */
 char *read_line(void)
 {
-  char *line = NULL; /* pointer to store input line */
-  size_t bufsize = 0; /* buffer size for getline */
-  ssize_t len;
+	int bufsize = RL_BUFSIZE;
+	int position = 0;
+	char *buffer = malloc(sizeof(char) * bufsize);
+	int bytes_read;
+	char c;
 
-  /* read line from stdin */
-  len = getline(&line, &bufsize, stdin);
+	if (!buffer)
+	{
+		fprintf(stderr, "allocation error\n");
+		exit(EXIT_FAILURE);
+	}
 
-  if (len == -1)
-  {
-    if (line)
-    {
-      /* if line not NULL, free alloc mem */
-      free(line);
-    }
+	while (1)
+	{
+		bytes_read = read(STDIN_FILENO, &c, 1);
 
-    /* exit if error or EOF (Ctrl+D) */
-    exit(EXIT_SUCCESS);
-  }
+		if (bytes_read == -1)
+		{
+			perror("read");
+			exit(EXIT_FAILURE);
+		}
 
-  return (line); /* return read line */
+		if (bytes_read == 0 || c == '\n')
+		{
+			buffer[position] = '\0';
+			if (bytes_read == 0 && position == 0)
+			{
+				free(buffer);
+				return (NULL);
+			}
+			return (buffer);
+		}
+		else
+		{
+			buffer[position] = c;
+		}
+		position++;
+
+		if (position >= bufsize)
+		{
+			bufsize += RL_BUFSIZE;
+			buffer = realloc(buffer, bufsize);
+			if (!buffer)
+			{
+				fprintf(stderr, "allocation error\n");
+				exit(EXIT_FAILURE);
+			}
+		}
+	}
 }
 
+#define TOK_BUFSIZE 64
+#define TOK_DELIM " \t\r\n\a"
+
 /**
- * parse_line - Split a line into tokens (arguments)
- * @line: Input line
+ * parse_line - Splits line into tokens based on delimiters
+ * @line: Input line to be tokenized
  *
- * Return: Array of tokens
+ * Return: Array of tokens derived from input line
  */
-char **parse_line(char *line, int *num_commands)
+char **parse_line(char *line)
 {
-  int bufsize = BUFFER_SIZE, position = 0;
-  char **tokens = malloc(bufsize * sizeof(char *));
-  char *token;
+	int bufsize = TOK_BUFSIZE;
+	int position = 0;
+	char **tokens = malloc(bufsize * sizeof(char*));
+	char *token;
 
-  if (!tokens)
-  {
-    /* memory allocation error */
-    fprintf(stderr, "allocation error\n");
-    exit(EXIT_FAILURE);
-  }
+	if (!tokens)
+	{
+		fprintf(stderr, "allocation error\n");
+		exit(EXIT_FAILURE);
+	}
 
-  /* tokenize input line using specified delimiters */
-  token = strtok(line, DELIM);
-  while (token != NULL)
-  {
-    tokens[position++] = token;
+	token = strtok(line, TOK_DELIM);
+	while (token != NULL)
+	{
+		tokens[position] = token;
+		position++;
 
-    if (position >= bufsize)
-    {
-      bufsize += BUFFER_SIZE;
-      tokens = realloc(tokens, bufsize *sizeof(char *));
-      if (!tokens)
-      {
-        fprintf(stderr, "allocation error\n");
-        exit(EXIT_FAILURE);
-      }
-    }
-      token = strtok(NULL, DELIM);
-  }
-  tokens[position] = NULL;
-
-  *num_commands = position;
-  return (tokens);
+		if (position >= bufsize)
+		{
+			bufsize += TOK_BUFSIZE;
+			tokens = realloc(tokens, bufsize * sizeof(char *));
+			if (!tokens)
+			{
+				fprintf(stderr, "allocation error\n");
+				exit(EXIT_FAILURE);
+			}
+		}
+		token = strtok(NULL, TOK_DELIM);
+	}
+	tokens[position] = NULL;
+	return (tokens);
 }
 
 /**
- * execute - Execute shell built-in or launch program
- * @args: Array of arguments
+ * execute - Executes shell built-in or launch program
+ * @args: Array of command arguments 
+ * @prog_name: Name of program for error messages
  *
- * Return: 1 if shell should continue running, 0 if should terminate
+ * Return: Status code based on execution results
  */
-int execute(char **args)
+int execute(char **args, char *prog_name)
 {
-  pid_t pid;
-  int status;
-  char *command_path;
+	int built_in_status;
+	pid_t pid;
+	int status;
 
-  if (args[0] == NULL) /* emplty command entered */
-    return (1);
+	if (args[0] == NULL)
+	{
+		return 0;
+	}
 
-  status = handle_builtin_commands(args);
-  if (status != -1)
-    return (status);
+	built_in_status = handle_builtin_commands(args);
+	if (built_in_status != -1)
+	{
+		return (built_in_status);
+	}
 
-  command_path = get_command_path(args[0]);
-  if (command_path == NULL)
-  {
-    fprintf(stderr, "%s: command not found\n", args[0]);
-    return (1);
-  }
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("fork failed");
+		return (2);
+	}
 
-  pid = fork();
-  if (pid == 0)
-  {
-    execute_command_in_child_process(args, command_path);
-  }
-  else if (pid < 0)
-  {
-    perror("fork");
-  }
-  else
-  {
-    do {
-      waitpid(pid, &status, WUNTRACED);
-    } while (!WIFEXITED(status) && !WIFSIGNALED(status));
-  }
-
-  if (command_path != args[0])
-    free(command_path);
-
-  return (1);
+	if (pid == 0)
+	{
+		if (execvp(args[0], args) == -1)
+		{
+			perror(prog_name);
+			exit(EXIT_FAILURE);
+		}
+	}
+	else
+	{
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+		{
+			return (WEXITSTATUS(status));
+		}
+		return (2);
+	}
+	return (2);
 }
 
 /**
- * handle_builtin_commands - Handles built_in shell commands
+ * handle_builtin_commands - Handles built-in shell commands
  * @args: Array of command arguments
  *
- * Return: 0 if command is "exit", 1 if command is "env", -1
- * otherwise
+ * Return: 1 if command is "exit", 0 if command is "env", -1 otherwise
  */
 int handle_builtin_commands(char **args)
 {
-  if (strcmp(args[0], "exit") == 0)
-    return (0);
+	if (strcmp(args[0], "exit") == 0)
+		return (1);
 
-  if (strcmp(args[0], "env") == 0)
-  {
-    print_custom_env();
-    return (1);
-  }
-  return (-1);
-}
-
-/**
- * execute_pipes - Executes commands separated by pipes
- * @commands: Array of commands
- * @num_commands: Number of commands
- *
- * Description: Forks processes and sets up pipes to execute
- * commands separated by the pipe symbol ('|'). The output of
- * one command is used as the input for the next command.
- */
-void execute_pipes(char **commands, int num_commands)
-{
-  int pipe_fds[2];
-  int i;
-  pid_t pid;
-
-  for (i = 0; i < num_commands - 1; i++)
-  {
-    if (pipe(pipe_fds) == -1)
-    {
-      perror("pipe");
-      exit(EXIT_FAILURE);
-    }
-
-    pid = fork();
-    if (pid == -1)
-    {
-      perror("fork");
-      exit(EXIT_FAILURE);
-    }
-
-    if (pid == 0)
-    {
-      dup2(pipe_fds[1], STDOUT_FILENO);
-      close(pipe_fds[0]);
-      close(pipe_fds[1]);
-      execute(parse_line(commands[i], &num_commands));
-      exit(EXIT_FAILURE);
-    }
-    else
-    {
-      dup2(pipe_fds[0], STDIN_FILENO);
-      close(pipe_fds[0]);
-      close(pipe_fds[1]);
-      wait(NULL);
-    }
-  }
-
-  execute(parse_line(commands[num_commands -1], &num_commands));
+	if (strcmp(args[0], "env") == 0)
+	{
+		print_custom_env();
+		return (1);
+	}
+	return (-1);
 }
