@@ -112,9 +112,11 @@ void print_custom_env(void)
 	};
 
 	char **env = env_vars;
+
 	while (*env)
 	{
 		char *value = getenv(*env);
+
 		if (value)
 		{
 			printf("%s=%s\n", *env, value);
