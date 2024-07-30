@@ -78,7 +78,7 @@ char **parse_line(char *line)
 {
 	int bufsize = TOK_BUFSIZE;
 	int position = 0;
-	char **tokens = malloc(bufsize * sizeof(char*));
+	char **tokens = malloc(bufsize * sizeof(char *));
 	char *token;
 
 	if (!tokens)
@@ -111,7 +111,7 @@ char **parse_line(char *line)
 
 /**
  * execute - Executes shell built-in or launch program
- * @args: Array of command arguments 
+ * @args: Array of command arguments
  * @prog_name: Name of program for error messages
  *
  * Return: Status code based on execution results
@@ -124,7 +124,7 @@ int execute(char **args, char *prog_name)
 
 	if (args[0] == NULL)
 	{
-		return 0;
+		return (0);
 	}
 
 	built_in_status = handle_builtin_commands(args);
