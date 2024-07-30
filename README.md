@@ -7,7 +7,7 @@ Simple Shell is a custom Unix shell implementaion. It aims to replicate the func
 1. [Installation](#installation)
 2. [Usage](#usage)
 3. [Features](#features)
-4. [Flowchart] (#flowchart)
+4. [Flowchart](#flowchart)
 5. [Authors](#authors)
 6. [Acknowledgments](#acknowledgments)
 
