@@ -57,7 +57,3 @@ To use the 'env' built-in command:
 
 .B Harrison Gearhart
 <R> <harrison.gearhart@atlasschool.com>
-
-.SH SEE ALSO
-.BR sh (1),
-.BR bash (1)

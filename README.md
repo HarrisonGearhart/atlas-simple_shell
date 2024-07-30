@@ -7,8 +7,9 @@ Simple Shell is a custom Unix shell implementaion. It aims to replicate the func
 1. [Installation](#installation)
 2. [Usage](#usage)
 3. [Features](#features)
-4. [Authors](#authors)
-5. [Acknowledgments](#acknowledgments)
+4. [Flowchart] (#flowchart)
+5. [Authors](#authors)
+6. [Acknowledgments](#acknowledgments)
 
 ## Installation
 To install and run Simple Shell, follow these steps:
