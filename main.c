@@ -49,6 +49,11 @@ int main(int argc, char **argv)
 		{
 			break;
 		}
+
+		if (status == 2)
+		{
+			printf("Error: Command execution failed\n");
+		}
 	}
 
 	return ((status == 2) ? 1 : 0);
