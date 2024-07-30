@@ -14,20 +14,28 @@ int main(int argc, char **argv)
 	char *line;
 	char **parsed_args;
 	int status;
+	int interactive = isatty(STDIN_FILENO);
 
 	(void)argc;
 	status = 0;
 
 	while (1)
 	{
-		printf("($) ");
-		fflush(stdout);
+		if (interactive)
+		{
+			
+			printf("($) ");
+			fflush(stdout);
+		}
 
 		line = read_line();
 
 		if (line == NULL)
 		{
-			printf("\n");
+			if (interactive)
+			{
+				printf("\n");
+			}
 			break;
 		}
 
